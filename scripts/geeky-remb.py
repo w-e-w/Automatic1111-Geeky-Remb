@@ -1,13 +1,13 @@
 import os
-import numpy as np
-from rembg import remove, new_session
-from PIL import Image, ImageOps, ImageFilter, ImageEnhance
-import cv2
-from tqdm import tqdm
-import gradio as gr
-from modules import script_callbacks, shared
-import torch
 import tempfile
+import cv2
+import gradio as gr
+import numpy as np
+from PIL import Image, ImageFilter, ImageEnhance
+from rembg import remove, new_session
+from tqdm import tqdm
+from modules import script_callbacks
+
 
 class GeekyRemB:
     def __init__(self):
@@ -85,7 +85,7 @@ class GeekyRemB:
                 alpha_matting_background_threshold=alpha_matting_background_threshold,
                 post_process_mask=post_process_mask,
             )
-            rembg_mask = np.array(removed_bg)[:,:,3]
+            rembg_mask = np.array(removed_bg)[:, :, 3]
         else:
             removed_bg = pil_image.convert("RGBA")
             rembg_mask = np.full(pil_image.size[::-1], 255, dtype=np.uint8)
@@ -224,6 +224,7 @@ class GeekyRemB:
         os.rename(output_path, temp_output)
         os.system(f"ffmpeg -i {temp_output} -c copy {output_path}")
         os.remove(temp_output)
+
 
 def on_ui_tabs():
     with gr.Blocks(analytics_enabled=False) as geeky_remb_tab:
@@ -431,5 +432,6 @@ def on_ui_tabs():
         )
 
     return [(geeky_remb_tab, "GeekyRemB", "geeky_remb_tab")]
+
 
 script_callbacks.on_ui_tabs(on_ui_tabs)
