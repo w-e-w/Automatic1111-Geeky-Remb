@@ -238,7 +238,8 @@ def on_ui_tabs():
                 input_type = gr.Radio(["Image", "Video"], label="Input Type", value="Image")
                 foreground_input = gr.Image(label="Foreground Image", type="pil", visible=True)
                 foreground_video = gr.Video(label="Foreground Video", visible=False)
-                
+                run_button = gr.Button(label="Run GeekyRemB")
+
                 with gr.Group():
                     gr.Markdown("### Foreground Adjustments")
                     foreground_scale = gr.Slider(label="Scale", minimum=0.1, maximum=5.0, value=1.0, step=0.1)
@@ -311,8 +312,6 @@ def on_ui_tabs():
                     value="Foreground",
                     visible=True
                 )
-
-        run_button = gr.Button(label="Run GeekyRemB")
 
         def update_input_type(choice):
             return {
