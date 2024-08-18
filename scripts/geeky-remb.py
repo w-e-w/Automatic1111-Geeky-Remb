@@ -58,7 +58,7 @@ class GeekyRemB:
                           shadow_opacity=0.5, color_adjustment=False, brightness=1.0, contrast=1.0, 
                           saturation=1.0, x_position=0, y_position=0, rotation=0, opacity=1.0, 
                           flip_horizontal=False, flip_vertical=False, mask_blur=0, mask_expansion=0,
-                          foreground_scale=1.0, foreground_aspect_ratio=None, remove_bg=True,
+                          foreground_scale=1.0, foreground_aspect_ratio: str = None, remove_bg=True,
                           use_custom_dimensions=False, custom_width=None, custom_height=None,
                           output_dimension_source="Foreground"):
         if self.session is None or self.session.model_name != model:
@@ -108,7 +108,10 @@ class GeekyRemB:
             output_width, output_height = orig_width, orig_height
 
         new_width = int(orig_width * foreground_scale)
-        if foreground_aspect_ratio is not None:
+
+        if foreground_aspect_ratio:
+            w, s, h = foreground_aspect_ratio.partition(":")
+            foreground_aspect_ratio = float(w) / float(h)
             new_height = int(new_width / foreground_aspect_ratio)
         else:
             new_height = int(orig_height * foreground_scale)
@@ -239,7 +242,7 @@ def on_ui_tabs():
                 with gr.Group():
                     gr.Markdown("### Foreground Adjustments")
                     foreground_scale = gr.Slider(label="Scale", minimum=0.1, maximum=5.0, value=1.0, step=0.1)
-                    foreground_aspect_ratio = gr.Slider(label="Aspect Ratio", minimum=0.1, maximum=10.0, value=1.0, step=0.1)
+                    foreground_aspect_ratio = gr.Textbox(label="Adjust Aspect Ratio", value="", placeholder="width:height, 1:1, 4:3, 16:9, 1:1.5 etc. leave blank for original")
                     x_position = gr.Slider(label="X Position", minimum=-1000, maximum=1000, value=0, step=1)
                     y_position = gr.Slider(label="Y Position", minimum=-1000, maximum=1000, value=0, step=1)
                     rotation = gr.Slider(label="Rotation", minimum=-360, maximum=360, value=0, step=0.1)
